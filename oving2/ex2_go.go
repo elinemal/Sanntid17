@@ -6,14 +6,14 @@ package main
 import (
     . "fmt"
     . "runtime"
-    "time"
+    //"time"
 )
 
 var i int = 0
 var lock = make(chan int, 1)
 var masterlock = make(chan int, 2)
 
-func add{
+func add() {
     for a := 0; a < 1000000; a++ {
         <-lock
         i += 1
@@ -22,8 +22,8 @@ func add{
     masterlock <- 1
 }
 
-func sub{
-    for a := 0; a < 10; a++ {
+func sub() {
+    for a := 0; a < 100000; a++ {
         <- lock
         i -= 1
         lock <- 1
@@ -40,14 +40,11 @@ func main() {
     go add()                      // This spawns someGoroutine() as a goroutine
     go sub()
 
-    for i := 0; i < 50; i++ {
-        Println(i)
-    }
     <-masterlock
     <-masterlock
     // We have no way to wait for the completion of a goroutine (without additional syncronization of some sort)
     // We'll come back to using channels in Exercise 2. For now: Sleep.
-    time.Sleep(200*time.Millisecond)
+    //time.Sleep(200*time.Millisecond)
     Println("Done: ", i)
 
 }
